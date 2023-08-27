@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    #canvas-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="miCanvas" width="600" height="600"></canvas>
+
+  <script>
+
+    var canvas = document.getElementById("miCanvas");
+
+
+    if (canvas.getContext) {
+      var ctx = canvas.getContext("2d");
+
+      let x = canvas.width / 2;
+      let y = canvas.height / 2;
+
+      let velocidad = 2;
+      const aumentarVelocidad = 7;
+
+      let ultimaDireccion = null;
+
+      function drawFigure() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "blue";
+        ctx.fillRect(x, y, 50, 50);
+      }
+
+      function cambiarDireccion() {
+            if (ultimaDireccion === "left") {
+                x = (x - velocidad + canvas.width) % canvas.width;
+            } else if (ultimaDireccion === "right") {
+                x = (x + velocidad) % canvas.width;
+            } else if (ultimaDireccion === "up") {
+                y = (y - velocidad + canvas.height) % canvas.height;
+            } else if (ultimaDireccion === "down") {
+                y = (y + velocidad) % canvas.height;
+            }
+
+            drawFigure();
+            window.requestAnimationFrame(cambiarDireccion);
+        }
+
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          ultimaDireccion = "left";
+        } else if (event.key === "ArrowRight") {
+          ultimaDireccion = "right";
+        } else if (event.key === "ArrowUp") {
+          ultimaDireccion = "up";
+        } else if (event.key === "ArrowDown") {
+          ultimaDireccion = "down";
+        } else if (event.key === " ") { 
+                velocidad = aumentarVelocidad;
+            }
+      });
+
+      window.addEventListener("keyup", (event) => {
+            if (event.key === " ") { 
+                velocidad = 2; 
+            }
+        });
+  
+      cambiarDireccion();
+    }
+  </script>
+</body>
+
+</html>
