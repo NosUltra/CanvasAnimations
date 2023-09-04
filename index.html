@@ -35,6 +35,30 @@
     var canvas = document.getElementById("miCanvas");
 
 
+    class Cuadro {
+      constructor(x, y, width, height, color) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.color = color;
+      }
+
+      dibujar(ctx) {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+      }
+
+      verificarColision(x, y, width, height) {
+        return (
+          this.x < x + width &&
+          this.x + this.width > x &&
+          this.y < y + height &&
+          this.y + this.height > y
+        );
+      }
+    }
+
     if (canvas.getContext) {
       var ctx = canvas.getContext("2d");
 
@@ -46,26 +70,70 @@
 
       let ultimaDireccion = null;
 
-      function drawFigure() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "blue";
-        ctx.fillRect(x, y, 50, 50);
+      let cuadroAzul = new Cuadro(x, y, 50, 50, "blue");
+      let cuadroNegro = new Cuadro(
+        Math.random() * canvas.width,
+        Math.random() * canvas.height,
+        20,
+        20,
+        "black"
+      );
+
+      let muro = new Cuadro(400, 200, 70, 300, "gray");
+      let muro2 = new Cuadro(120, 200, 70, 300, "gray");
+
+      function Colision() {
+        if (cuadroNegro.verificarColision(x, y, 50, 50)) {
+          cuadroNegro.x = Math.random() * canvas.width;
+          cuadroNegro.y = Math.random() * canvas.height;
+        }
+
+        if (muro.verificarColision(x, y, 50, 50)) {
+          if (ultimaDireccion === "left") {
+            x += velocidad;
+          } else if (ultimaDireccion === "right") {
+            x -= velocidad;
+          } else if (ultimaDireccion === "up") {
+            y += velocidad;
+          } else if (ultimaDireccion === "down") {
+            y -= velocidad;
+          }
+        }
+        if (muro2.verificarColision(x, y, 50, 50)) {
+          if (ultimaDireccion === "left") {
+            x += velocidad;
+          } else if (ultimaDireccion === "right") {
+            x -= velocidad;
+          } else if (ultimaDireccion === "up") {
+            y += velocidad;
+          } else if (ultimaDireccion === "down") {
+            y -= velocidad;
+          }
+        }
       }
 
       function cambiarDireccion() {
-            if (ultimaDireccion === "left") {
-                x = (x - velocidad + canvas.width) % canvas.width;
-            } else if (ultimaDireccion === "right") {
-                x = (x + velocidad) % canvas.width;
-            } else if (ultimaDireccion === "up") {
-                y = (y - velocidad + canvas.height) % canvas.height;
-            } else if (ultimaDireccion === "down") {
-                y = (y + velocidad) % canvas.height;
-            }
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
-            drawFigure();
-            window.requestAnimationFrame(cambiarDireccion);
+        if (ultimaDireccion === "left") {
+          x = (x - velocidad + canvas.width) % canvas.width;
+        } else if (ultimaDireccion === "right") {
+          x = (x + velocidad) % canvas.width;
+        } else if (ultimaDireccion === "up") {
+          y = (y - velocidad + canvas.height) % canvas.height;
+        } else if (ultimaDireccion === "down") {
+          y = (y + velocidad) % canvas.height;
         }
+
+        Colision();
+        cuadroAzul.x = x;
+        cuadroAzul.y = y;
+        cuadroNegro.dibujar(ctx);
+        muro.dibujar(ctx);
+        muro2.dibujar(ctx);
+        cuadroAzul.dibujar(ctx); 
+        window.requestAnimationFrame(cambiarDireccion);
+      }
 
       window.addEventListener("keydown", (event) => {
         if (event.key === "ArrowLeft") {
@@ -76,17 +144,11 @@
           ultimaDireccion = "up";
         } else if (event.key === "ArrowDown") {
           ultimaDireccion = "down";
-        } else if (event.key === " ") { 
-                velocidad = aumentarVelocidad;
-            }
+        } else if (event.key === " ") {
+          velocidad += aumentarVelocidad;
+        }
       });
 
-      window.addEventListener("keyup", (event) => {
-            if (event.key === " ") { 
-                velocidad = 2; 
-            }
-        });
-  
       cambiarDireccion();
     }
   </script>
