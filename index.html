@@ -84,24 +84,23 @@
       let muro = new Cuadro(400, 200, 70, 300, "gray");
       let muro2 = new Cuadro(120, 200, 70, 300, "gray");
 
-      let isPaused = false;
+      let EnPausa = false;
       let animationID;
 
-      function togglePause() {
-        isPaused = !isPaused;
-        if (isPaused) {
-          // Detener la animación
+      function DarPausa() {
+        EnPausa = !EnPausa;
+        if (EnPausa) {
+
           cancelAnimationFrame(animationID);
 
-          // Dibujar el cuadro de pausa
-          ctx.fillStyle = "rgba(128, 128, 128, 0.7)"; // Gris transparente
+
+          ctx.fillStyle = "rgba(128, 128, 128, 0.7)"; 
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
           ctx.font = "48px Arial";
           ctx.fillStyle = "white";
           ctx.fillText("Pausa", canvas.width / 2 - 50, canvas.height / 2);
         } else {
-          // Continuar la animación
           animationID = requestAnimationFrame(cambiarDireccion);
         }
       }
@@ -140,7 +139,7 @@
       function cambiarDireccion() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        if (!isPaused) {
+        if (!EnPausa) {
           if (ultimaDireccion === "left") {
             x = (x - velocidad + canvas.width) % canvas.width;
           } else if (ultimaDireccion === "right") {
@@ -164,27 +163,7 @@
           ctx.fillText("Score:" + score, 10, 30);
         }
 
-        // Solicitar el siguiente cuadro de animación
         animationID = requestAnimationFrame(cambiarDireccion);
-      }
-
-      function togglePause() {
-        isPaused = !isPaused;
-        if (isPaused) {
-          // Detener la animación
-          cancelAnimationFrame(animationID);
-
-          // Dibujar el cuadro de pausa
-          ctx.fillStyle = "rgba(128, 128, 128, 0.7)"; // Gris transparente
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-          ctx.font = "48px Arial";
-          ctx.fillStyle = "white";
-          ctx.fillText("Pausa", canvas.width / 2 - 50, canvas.height / 2);
-        } else {
-          // Continuar la animación
-          animationID = requestAnimationFrame(cambiarDireccion);
-        }
       }
 
       window.addEventListener("keydown", (event) => {
@@ -199,8 +178,7 @@
         } else if (event.key === " ") {
           velocidad += aumentarVelocidad;
         } else if (event.key === "P" || event.key === "p") {
-          // Pausar o reanudar el juego al presionar la tecla "P" o "p"
-          togglePause();
+          DarPausa();
         }
       });
 
